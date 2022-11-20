@@ -4,6 +4,7 @@
 #include <units/units.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/trajectory/TrapezoidProfile.h>
+#include <frc/controller/SimpleMotorFeedforward.h>
 #include <wpi/math>
 #include <ctre/Phoenix.h>
 
@@ -57,8 +58,8 @@ struct Swerve {
 
 	// Drive Motor Characterization
 	units::volt_t driveKS = (12.0_V); // divide by 12.0 to convert volts to percent output for CTRE
-	double driveKV = (2.44 / 12);
-	double driveKA = (0.27 / 12);
+	units::unit_t<units::velocity::meters_per_second, double, units::linear_scale> driveKV = (10_mps);
+	units::unit_t<units::acceleration::meters_per_second_squared, double, units::linear_scale> driveKA = (20_mps_sq);
 
 	// Swerve Profiling Values
 	units::meters_per_second_t maxSpeed = 4.5_mps;
@@ -77,16 +78,16 @@ struct Swerve {
 
 	/* Module Specific Constants */
 	// Front Left Module - Module 0
-	SwerveModuleConstants Mod1{ 2,1,9,42.62 };
+	SwerveModuleConstants Mod0{ 2,1,9,42.62 };
 
 	// Front Right Module - Module 1
-	SwerveModuleConstants Mod2{ 4,3,10,114.78 };
+	SwerveModuleConstants Mod1{ 4,3,10,114.78 };
 
 	// Back Left Module - Module 2
-	SwerveModuleConstants Mod3{ 8,7,12,18.54 };
+	SwerveModuleConstants Mod2{ 8,7,12,18.54 };
 
 	// Back Right Module - Module 3
-	SwerveModuleConstants Mod4{ 6,5,11,29.26 };
+	SwerveModuleConstants Mod3{ 6,5,11,29.26 };
 };
 
 struct AutoConstants {

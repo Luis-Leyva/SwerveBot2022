@@ -5,14 +5,14 @@
 #include <units/units.h>
 #include <Math.h>
 
-class CTREModuleState {
+struct CTREModuleState {
 public:
 	/**
 	* @param scopeReference Current Angle
 	* @param newAngle Target Angle
 	* @return Closest angle within scope
 	*/
-	double placeInAppropriate0To360Scope(units::degree_t scopeReferenceDegree, units::degree_t newAngleDegree) {
+	static double placeInAppropriate0To360Scope(units::degree_t scopeReferenceDegree, units::degree_t newAngleDegree) {
 		double scopeReference = scopeReferenceDegree.to<double>();
 		double newAngle = newAngleDegree.to<double>();
 		double lowerBound;
@@ -46,7 +46,7 @@ public:
 	* @param desiredState The desired state.
 	* @param currentAngle The current module angle.
 	*/
-	frc::SwerveModuleState Optimize(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle) {
+	static frc::SwerveModuleState Optimize(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle) {
 		double targetAngle = placeInAppropriate0To360Scope(currentAngle.Degrees(), desiredState.angle.Degrees());
 		double targetSpeed = desiredState.speed.to<double>();
 		double delta = targetAngle - currentAngle.Degrees().to<double>();

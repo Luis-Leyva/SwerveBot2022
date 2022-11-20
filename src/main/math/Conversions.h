@@ -1,14 +1,15 @@
 #pragma once
 
-class Conversions {
+struct Conversions {
 public:
     /**
     * @param counts Falcon Counts
     * @param gearRatio Gear Ratio between Falcon and Mechanism
     * @return Degrees of Rotation of Mechanism
     */
-    double falconToDegrees(double counts, double gearRatio) {
-        return counts * (360.0 / (gearRatio * 2048.0));
+    static units::degree_t falconToDegrees(double counts, double gearRatio) {
+        units::degree_t degrees{ counts * (360.0 / (gearRatio * 2048.0)) };
+        return degrees;
     }
 
     /**
@@ -16,8 +17,8 @@ public:
     * @param gearRatio Gear Ratio between Falcon and Mechanism
     * @return Falcon Counts
     */
-    double degreesToFalcon(double degrees, double gearRatio) {
-        double ticks = degrees / (360.0 / (gearRatio * 2048.0));
+    static double degreesToFalcon(units::degree_t degrees, double gearRatio) {
+        double ticks = units::unit_cast<double>(degrees) / (360.0 / (gearRatio * 2048.0));
         return ticks;
     }
 
@@ -26,7 +27,7 @@ public:
     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
     * @return RPM of Mechanism
     */
-    double falconToRPM(double velocityCounts, double gearRatio) {
+    static double falconToRPM(double velocityCounts, double gearRatio) {
         double motorRPM = velocityCounts * (600.0 / 2048.0);
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
@@ -37,7 +38,7 @@ public:
     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
     * @return RPM of Mechanism
     */
-    double RPMToFalcon(double RPM, double gearRatio) {
+    static double RPMToFalcon(double RPM, double gearRatio) {
         double motorRPM = RPM * gearRatio;
         double sensorCounts = motorRPM * (2048.0 / 600.0);
         return sensorCounts;
@@ -49,9 +50,9 @@ public:
     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
     * @return Falcon Velocity Counts
     */
-    double falconToMPS(double velocitycounts, double circumference, double gearRatio) {
+    static units::meters_per_second_t falconToMPS(double velocitycounts, double circumference, double gearRatio) {
         double wheelRPM = falconToRPM(velocitycounts, gearRatio);
-        double wheelMPS = (wheelRPM * circumference) / 60;
+        units::meters_per_second_t wheelMPS{ (wheelRPM * circumference) / 60.0 };
         return wheelMPS;
     }
 
@@ -61,8 +62,8 @@ public:
     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
     * @return Falcon Velocity Counts
     */
-    double MPSToFalcon(double velocity, double circumference, double gearRatio) {
-        double wheelRPM = ((velocity * 60) / circumference);
+    static double MPSToFalcon(units::velocity::meters_per_second_t velocity, double circumference, double gearRatio) {
+        double wheelRPM = ((units::unit_cast<double>(velocity) * 60) / circumference);
         double wheelVelocity = RPMToFalcon(wheelRPM, gearRatio);
         return wheelVelocity;
     }

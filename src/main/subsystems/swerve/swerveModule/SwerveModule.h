@@ -5,7 +5,11 @@
 #pragma once
 
 #include "./subsystems/swerve/swerveConstants/Constants.h"
+#include "./util/SwerveModuleConstants.h"
+#include "./util/CTREModuleState.h"
+#include "./math/Conversions.h"
 
+#include <Math.h>
 #include <ctre/Phoenix.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/geometry/Rotation2d.h>
@@ -14,15 +18,24 @@
 
 class SwerveModule {
 public:
-	SwerveModule(Constants* constants);
+	SwerveModule(Constants* constants, int moduleNumber, SwerveModuleConstants moduleConstants);
+	void setDesiredState(frc::SwerveModuleState desiredState, bool isOpenLoop);
+	void resetToAbsolute();
+	void configAngleEncoder();
+	void configAngleMotor();
+	void configDriveMotor();
+	frc::Rotation2d getCanCoder();
+	frc::SwerveModuleState* getState();
+	int getModuleNumber();
+	frc::SwerveModuleState getLastDesiredState();
 private:
 	Constants* constants;
 	int moduleNumber;
 	double angleOffset;
-	TalonFX angleMotor;
-	TalonFX driveMotor;
-	CANCoder encoder;
-	double lastAngle;
-	// SwerveModuleState lastDesiredState;
+	TalonFX* angleMotor;
+	TalonFX* driveMotor;
+	CANCoder* angleEncoder;
+	units::degree_t lastAngle;
+	frc::SwerveModuleState lastDesiredState;
 	frc::SimpleMotorFeedforward<units::meters> feedforward{ constants->swerve.driveKS, constants->swerve.driveKV, constants->swerve.driveKA };
 };
