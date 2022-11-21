@@ -4,26 +4,28 @@
 
 #include "SwerveModule.h"
 
-SwerveModule::SwerveModule(Constants* constants, int moduleNumber, SwerveModuleConstants moduleConstants) {
+SwerveModule::SwerveModule(Constants* constants, int moduleNumber, SwerveModuleConstants* moduleConstants) {
     this->moduleNumber = moduleNumber;
     this->constants = constants;
 
-    angleOffset = moduleConstants.angleOffset;
+    angleOffset = moduleConstants->angleOffset;
+
+    constants->swerve.configure();
 
     /* Angle Encoder Config */
-    angleEncoder = new CANCoder(moduleConstants.canCoderID);
+    angleEncoder = new CANCoder(moduleConstants->canCoderID);
     configAngleEncoder();
 
     /* Angle Motor Config */
-    angleMotor = new TalonFX(moduleConstants.angleMotorID);
+    angleMotor = new TalonFX(moduleConstants->angleMotorID);
     configAngleMotor();
 
     /* Drive Motor Config */
-    driveMotor = new TalonFX(moduleConstants.driveMotorID);
+    driveMotor = new TalonFX(moduleConstants->driveMotorID);
     configDriveMotor();
 
     lastAngle = getState()->angle.Degrees();
-};
+}
 
 void SwerveModule::setDesiredState(frc::SwerveModuleState desiredState, bool isOpenLoop) {
     desiredState = CTREModuleState::Optimize(desiredState, getState()->angle); // Custom optimize command, since default WPILib optimize assumes // continuous controller which CTRE is // not
@@ -51,12 +53,12 @@ void SwerveModule::resetToAbsolute() {
 
 void SwerveModule::configAngleEncoder() {
     angleEncoder->ConfigFactoryDefault();
-    angleEncoder->ConfigAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
+    angleEncoder->ConfigAllSettings(constants->swerve.swerveCanCoderConfig);
 }
 
 void SwerveModule::configAngleMotor() {
     angleMotor->ConfigFactoryDefault();
-    angleMotor->ConfigAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
+    angleMotor->ConfigAllSettings(constants->swerve.swerveAngleConfig);
     angleMotor->SetInverted(constants->swerve.angleMotorInvert);
     angleMotor->SetNeutralMode(constants->swerve.angleNeutralMode);
     resetToAbsolute();
@@ -64,7 +66,7 @@ void SwerveModule::configAngleMotor() {
 
 void SwerveModule::configDriveMotor() {
     driveMotor->ConfigFactoryDefault();
-    driveMotor->ConfigAllSettings(Robot.ctreConfigs.swerveDriveFXConfig);
+    driveMotor->ConfigAllSettings(constants->swerve.swerveDriveConfig);
     driveMotor->SetInverted(constants->swerve.driveMotorInvert);
     driveMotor->SetNeutralMode(constants->swerve.driveNeutralMode);
     driveMotor->SetSelectedSensorPosition(0);

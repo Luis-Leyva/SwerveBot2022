@@ -1,11 +1,19 @@
-#include "./util/SwerveModuleConstants.h"
-#include "ModuleIDs.h"
+#pragma once
 
-#include <units/units.h>
+#include "./util/SwerveModuleConstants.h"
+
+#include <units/length.h>
+#include <units/voltage.h>
+#include <units/velocity.h>
+#include <units/acceleration.h>
+#include <units/angular_velocity.h>
+#include <units/angular_acceleration.h>
+#include <units/base.h>
+#include <units/angle.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
-#include <wpi/math>
+// #include <wpi/math>
 #include <ctre/Phoenix.h>
 
 struct Swerve {
@@ -13,9 +21,9 @@ struct Swerve {
 	bool invertGyro = false;
 
 	// Drivetrain Constants
-	double trackWidth = units::meter_t(20.75_in).to<double>();
-	double wheelBase = units::meter_t(20.75_in).to<double>();
-	double wheelDiameter = units::meter_t(4_in).to<double>();
+	double trackWidth = 0.53;
+	double wheelBase = 0.53;
+	double wheelDiameter = 0.1016;
 	double wheelCircumference = wheelDiameter * M_PI;
 
 	double openLoopRamp = 0.25;
@@ -33,14 +41,14 @@ struct Swerve {
 	};
 
 	// Swerve Angle Current Limit
-	int angleContinuousCurrentLimit = 25;
-	int anglePeakCurrentLimit = 40;
+	double angleContinuousCurrentLimit = 25.0;
+	double anglePeakCurrentLimit = 40.0;
 	double anglePeakCurrentDuration = 0.1;
 	bool angleEnableCurrentLimit = true;
 
 	// Swerve Drive Current Limit
-	int driveContinuousCurrentLimit = 35;
-	int drivePeakCurrentLimit = 60;
+	double driveContinuousCurrentLimit = 35.0;
+	double drivePeakCurrentLimit = 60.0;
 	double drivePeakCurrentDuration = 0.1;
 	bool driveEnableCurrentLimit = true;
 
@@ -58,8 +66,8 @@ struct Swerve {
 
 	// Drive Motor Characterization
 	units::volt_t driveKS = (12.0_V); // divide by 12.0 to convert volts to percent output for CTRE
-	units::unit_t<units::velocity::meters_per_second, double, units::linear_scale> driveKV = (10_mps);
-	units::unit_t<units::acceleration::meters_per_second_squared, double, units::linear_scale> driveKA = (20_mps_sq);
+	units::unit_t<frc::SimpleMotorFeedforward<units::meter>::kv_unit> driveKV{ 10.00 };
+	units::unit_t<frc::SimpleMotorFeedforward<units::meter>::ka_unit> driveKA{ 20.00 };
 
 	// Swerve Profiling Values
 	units::meters_per_second_t maxSpeed = 4.5_mps;
@@ -78,31 +86,76 @@ struct Swerve {
 
 	/* Module Specific Constants */
 	// Front Left Module - Module 0
-	SwerveModuleConstants Mod0{ 2,1,9,42.62 };
+	SwerveModuleConstants Mod0{ 2,1,9,42.62_deg };
 
 	// Front Right Module - Module 1
-	SwerveModuleConstants Mod1{ 4,3,10,114.78 };
+	SwerveModuleConstants Mod1{ 4,3,10,114.78_deg };
 
 	// Back Left Module - Module 2
-	SwerveModuleConstants Mod2{ 8,7,12,18.54 };
+	SwerveModuleConstants Mod2{ 8,7,12,18.54_deg };
 
 	// Back Right Module - Module 3
-	SwerveModuleConstants Mod3{ 6,5,11,29.26 };
+	SwerveModuleConstants Mod3{ 6,5,11,29.26_deg };
+
+	TalonFXConfiguration swerveAngleConfig;
+	TalonFXConfiguration swerveDriveConfig;
+	CANCoderConfiguration swerveCanCoderConfig;
+
+	// Swerve Angle Motor Configuration
+	SupplyCurrentLimitConfiguration angleSupplyLimit{
+		angleEnableCurrentLimit,
+		angleContinuousCurrentLimit,
+		anglePeakCurrentLimit,
+		anglePeakCurrentDuration
+	};
+
+	// Swerve Drive Motor Configuration
+	SupplyCurrentLimitConfiguration driveSupplyLimit{
+		driveEnableCurrentLimit,
+		driveContinuousCurrentLimit,
+		drivePeakCurrentLimit,
+		drivePeakCurrentDuration
+	};
+
+	void configure() {
+		swerveAngleConfig.slot0.kP = angleKP;
+		swerveAngleConfig.slot0.kI = angleKI;
+		swerveAngleConfig.slot0.kD = angleKD;
+		swerveAngleConfig.slot0.kF = angleKF;
+		swerveAngleConfig.supplyCurrLimit = angleSupplyLimit;
+		swerveAngleConfig.initializationStrategy = SensorInitializationStrategy::BootToZero;
+
+		swerveDriveConfig.slot0.kP = driveKP;
+		swerveDriveConfig.slot0.kI = driveKI;
+		swerveDriveConfig.slot0.kD = driveKD;
+		swerveDriveConfig.slot0.kF = driveKF;
+		swerveDriveConfig.supplyCurrLimit = driveSupplyLimit;
+		swerveDriveConfig.initializationStrategy = SensorInitializationStrategy::BootToZero;
+		swerveDriveConfig.openloopRamp = openLoopRamp;
+		swerveDriveConfig.closedloopRamp = closedLoopRamp;
+
+		// Swerve Encoder Configuration
+		swerveCanCoderConfig.absoluteSensorRange = AbsoluteSensorRange::Unsigned_0_to_360;
+		swerveCanCoderConfig.sensorDirection = canCoderInvert;
+		swerveCanCoderConfig.initializationStrategy = SensorInitializationStrategy::BootToAbsolutePosition;
+		swerveCanCoderConfig.sensorTimeBase = SensorTimeBase::PerSecond;
+	}
 };
 
 struct AutoConstants {
 	units::meters_per_second_t kMaxSpeed = 3_mps;
 	units::meters_per_second_squared_t kMaxAcceleration = 3_mps_sq;
-	units::radian_t kMaxAngularSpeedRadiansPerSecond = 180_deg;
-	units::radian_t kMaxAngularAccelerationRadiansPerSecondSquared = 180_deg;
+	units::degrees_per_second_t kMaxAngularSpeedRadiansPerSecond = 180_deg_per_s;
+	units::degrees_per_second_squared_t kMaxAngularAccelerationRadiansPerSecondSquared = 180_deg_per_s / 1_s;
 
 	double kPXController = 1;
 	double kPYController = 1;
 	double kPThetaController = 1;
 
 	// Constraint for the motion profilied robot angle controller
-	frc::TrapezoidProfile<units::radian_t>::Constraints kThetaControllerConstraints{ kMaxAngularSpeedRadiansPerSecond , kMaxAngularAccelerationRadiansPerSecondSquared };
+	frc::TrapezoidProfile<units::degrees>::Constraints kThetaControllerConstraints{ kMaxAngularSpeedRadiansPerSecond , kMaxAngularAccelerationRadiansPerSecondSquared };
 };
+
 
 struct Constants {
 	double stickDeadBand = 0.1;

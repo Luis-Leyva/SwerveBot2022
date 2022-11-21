@@ -2,7 +2,8 @@
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <units/units.h>
+#include <units/angle.h>
+#include <units/velocity.h>
 #include <Math.h>
 
 struct CTREModuleState {
@@ -52,7 +53,11 @@ public:
 		double delta = targetAngle - currentAngle.Degrees().to<double>();
 		if (abs(delta) > 90) {
 			targetSpeed = -targetSpeed;
-			targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+			if (delta > 90) {
+				targetAngle -= 180;
+			} else {
+				targetAngle += 180;
+			}
 		}
 
 		units::meters_per_second_t targetSpeedUnit = units::meters_per_second_t(targetSpeed);

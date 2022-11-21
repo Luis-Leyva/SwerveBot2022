@@ -1,5 +1,8 @@
 #pragma once
 
+#include <units/velocity.h>
+#include <units/angle.h>
+
 struct Conversions {
 public:
     /**

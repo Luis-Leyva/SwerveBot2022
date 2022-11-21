@@ -14,11 +14,13 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <units/units.h>
+#include <units/angle.h>
+#include <units/base.h>
+#include <units/voltage.h>
 
 class SwerveModule {
 public:
-	SwerveModule(Constants* constants, int moduleNumber, SwerveModuleConstants moduleConstants);
+	SwerveModule(Constants* constants, int moduleNumber, SwerveModuleConstants* moduleConstants);
 	void setDesiredState(frc::SwerveModuleState desiredState, bool isOpenLoop);
 	void resetToAbsolute();
 	void configAngleEncoder();
@@ -31,7 +33,7 @@ public:
 private:
 	Constants* constants;
 	int moduleNumber;
-	double angleOffset;
+	units::degree_t angleOffset;
 	TalonFX* angleMotor;
 	TalonFX* driveMotor;
 	CANCoder* angleEncoder;
