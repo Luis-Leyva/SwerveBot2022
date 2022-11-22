@@ -27,5 +27,5 @@ class SwerveAuto
 public:
 	SwerveAuto(Drivetrain* swerve);
 private:
-	Drivetrain* swerve;
+	Drivetrain* drivetrain;
 };

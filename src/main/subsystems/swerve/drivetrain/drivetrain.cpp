@@ -48,7 +48,7 @@ frc::Pose2d Drivetrain::getPose() {
 	return swerveOdometry->GetPose();
 }
 
-void Drivetrain::resetOdomentry(frc::Pose2d pose) {
+void Drivetrain::resetOdometry(frc::Pose2d pose) {
 	swerveOdometry->ResetPosition(pose, getYaw());
 }
 

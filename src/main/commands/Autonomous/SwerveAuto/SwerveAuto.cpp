@@ -7,13 +7,12 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-SwerveAuto::SwerveAuto(Drivetrain* swerve) {
+SwerveAuto::SwerveAuto(Drivetrain* swerve) : drivetrain{ swerve } {
 	// Add your commands here, e.g.
 	// AddCommands(FooCommand(), BarCommand());
-	this->swerve = swerve;
 
-	frc::TrajectoryConfig config(swerve->constants.autoConstants.kMaxSpeed, swerve->constants.autoConstants.kMaxAcceleration);
-	config.SetKinematics(swerve->constants.swerve.swerveKinematics);
+	frc::TrajectoryConfig config(drivetrain->constants.autoConstants.kMaxSpeed, drivetrain->constants.autoConstants.kMaxAcceleration);
+	config.SetKinematics(drivetrain->constants.swerve.swerveKinematics);
 
 	frc::Trajectory trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
 		frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
@@ -23,21 +22,23 @@ SwerveAuto::SwerveAuto(Drivetrain* swerve) {
 	);
 
 	frc::ProfiledPIDController<units::radian> thetaController(
-		swerve->constants.autoConstants.kPThetaController,
+		drivetrain->constants.autoConstants.kPThetaController,
 		0, 0,
-		swerve->constants.autoConstants.kThetaControllerConstraints
+		drivetrain->constants.autoConstants.kThetaControllerConstraints
 	);
 	thetaController.EnableContinuousInput(-180_deg, 180_deg);
 
 	frc2::SwerveControllerCommand<4> swerveControllerCommand(
 		trajectory,
-		// [this](auto swerve) { return swerve->getPose(); },
-		swerve->getPose(),
-		swerve->constants.swerve.swerveKinematics,
-		frc2::PIDController(swerve->constants.autoConstants.kPXController, 0, 0),
-		frc2::PIDController(swerve->constants.autoConstants.kPYController, 0, 0),
+		[this]() { return drivetrain->getPose(); },
+		drivetrain->constants.swerve.swerveKinematics,
+		frc2::PIDController(drivetrain->constants.autoConstants.kPXController, 0, 0),
+		frc2::PIDController(drivetrain->constants.autoConstants.kPYController, 0, 0),
 		thetaController,
-		[this](auto moduleStates) {swerve->setModuleStates(moduleStates);},
-		{ swerve }
+		[this](auto moduleStates) {drivetrain->setModuleStates(moduleStates);},
+		{ drivetrain }
 	);
+
+	AddCommands(frc2::InstantCommand([&] {drivetrain->resetOdometry(trajectory.InitialPose());}, { drivetrain }),
+		swerveControllerCommand);
 }

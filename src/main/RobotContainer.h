@@ -6,6 +6,7 @@
 
 #include "subsystems/swerve/drivetrain/Drivetrain.h"
 #include "commands/Teleop/DriveSwerve/DriveSwerve.h"
+#include "commands/Autonomous/SwerveAuto/SwerveAuto.h"
 
 #include <frc/GenericHID.h>
 #include <frc/Joystick.h>
@@ -29,6 +30,8 @@ public:
 
 private:
 	// The robot's subsystems and commands are defined here...
+	void ConfigureButtonBindings();
+
 	frc::Joystick driver{ 0 };
 	frc2::JoystickButton zeroGyro{ &driver, 4 };
 
@@ -37,6 +40,4 @@ private:
 	int rotationAxis = 4;
 
 	Drivetrain swerve;
-
-	void ConfigureButtonBindings();
 };

@@ -26,7 +26,7 @@ public:
 	void drive(frc::Translation2d translation, units::radians_per_second_t rotation, bool fieldRelative, bool isOpenLoop);
 	void setModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
 	frc::Pose2d getPose();
-	void resetOdomentry(frc::Pose2d pose);
+	void resetOdometry(frc::Pose2d pose);
 	wpi::array<frc::SwerveModuleState, 4> getStates();
 	void zeroGyro();
 	frc::Rotation2d getYaw();
