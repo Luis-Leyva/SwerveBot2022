@@ -22,20 +22,20 @@
  */
 class RobotContainer {
 public:
-  RobotContainer();
+	RobotContainer();
 
-  frc2::Command* GetAutonomousCommand();
+	frc2::Command* GetAutonomousCommand();
 
 private:
-  // The robot's subsystems and commands are defined here...
-  frc::Joystick driver{ 0 };
-  frc2::JoystickButton zeroGyro{ &driver, 4 };
+	// The robot's subsystems and commands are defined here...
+	frc::Joystick driver{ 0 };
+	frc2::JoystickButton zeroGyro{ &driver, 4 };
 
-  int translationAxis = 1;
-  int strafeAxis = 0;
-  int rotationAxis = 4;
+	int translationAxis = 1;
+	int strafeAxis = 0;
+	int rotationAxis = 4;
 
-  Drivetrain swerve;
+	Drivetrain swerve;
 
-  void ConfigureButtonBindings();
+	void ConfigureButtonBindings();
 };

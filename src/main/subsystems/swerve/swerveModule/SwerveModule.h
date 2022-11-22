@@ -27,7 +27,7 @@ public:
 	void configAngleMotor();
 	void configDriveMotor();
 	frc::Rotation2d getCanCoder();
-	frc::SwerveModuleState* getState();
+	frc::SwerveModuleState getState();
 	int getModuleNumber();
 	frc::SwerveModuleState getLastDesiredState();
 private:

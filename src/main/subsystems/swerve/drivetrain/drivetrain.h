@@ -22,26 +22,26 @@
 
 class Drivetrain : public frc2::SubsystemBase {
 public:
-  Drivetrain();
-  void drive(frc::Translation2d translation, units::radians_per_second_t rotation, bool fieldRelative, bool isOpenLoop);
-  void setModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
-  frc::Pose2d getPose();
-  void resetOdomentry(frc::Pose2d pose);
-  wpi::array<frc::SwerveModuleState*, 4> getStates();
-  void zeroGyro();
-  frc::Rotation2d getYaw();
+	Drivetrain();
+	void drive(frc::Translation2d translation, units::radians_per_second_t rotation, bool fieldRelative, bool isOpenLoop);
+	void setModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
+	frc::Pose2d getPose();
+	void resetOdomentry(frc::Pose2d pose);
+	wpi::array<frc::SwerveModuleState, 4> getStates();
+	void zeroGyro();
+	frc::Rotation2d getYaw();
 
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic() override;
+	/**
+	 * Will be called periodically whenever the CommandScheduler runs.
+	 */
+	void Periodic() override;
 
 private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+	// Components (e.g. motor controllers and sensors) should generally be
+	// declared private and exposed only through public methods.
 
-  Constants constants;
-  frc::SwerveDriveOdometry<4>* swerveOdometry;
-  std::vector<SwerveModule*> swerveModules{ 4 };
-  AHRS navx{ frc::SPI::Port::kMXP };
+	Constants constants;
+	frc::SwerveDriveOdometry<4>* swerveOdometry;
+	std::vector<SwerveModule*> swerveModules{ 4 };
+	AHRS navx{ frc::SPI::Port::kMXP };
 };
