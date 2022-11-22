@@ -7,10 +7,10 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-SwerveAuto::SwerveAuto(Drivetrain* swerve) {
+SwerveAuto::SwerveAuto(Drivetrain* swerve) : m_drivetrain(swerve) {
 	// Add your commands here, e.g.
 	// AddCommands(FooCommand(), BarCommand());
-	this->swerve = swerve;
+	// this->swerve = swerve;
 
 	frc::TrajectoryConfig config(swerve->constants.autoConstants.kMaxSpeed, swerve->constants.autoConstants.kMaxAcceleration);
 	config.SetKinematics(swerve->constants.swerve.swerveKinematics);
@@ -31,8 +31,8 @@ SwerveAuto::SwerveAuto(Drivetrain* swerve) {
 
 	frc2::SwerveControllerCommand<4> swerveControllerCommand(
 		trajectory,
-		// [this](auto swerve) { return swerve->getPose(); },
-		swerve->getPose(),
+		[this]() { return swerve->getPose(); },
+		// swerve->getPose(),
 		swerve->constants.swerve.swerveKinematics,
 		frc2::PIDController(swerve->constants.autoConstants.kPXController, 0, 0),
 		frc2::PIDController(swerve->constants.autoConstants.kPYController, 0, 0),
