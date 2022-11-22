@@ -35,12 +35,11 @@ public:
 	 * Will be called periodically whenever the CommandScheduler runs.
 	 */
 	void Periodic() override;
+	Constants constants;
 
 private:
 	// Components (e.g. motor controllers and sensors) should generally be
 	// declared private and exposed only through public methods.
-
-	Constants constants;
 	frc::SwerveDriveOdometry<4>* swerveOdometry;
 	std::vector<SwerveModule*> swerveModules{ 4 };
 	AHRS navx{ frc::SPI::Port::kMXP };

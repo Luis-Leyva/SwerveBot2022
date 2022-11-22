@@ -13,7 +13,7 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
-// #include <wpi/math>
+#include <wpi/numbers>
 #include <ctre/Phoenix.h>
 
 struct Swerve {
@@ -71,7 +71,7 @@ struct Swerve {
 
 	// Swerve Profiling Values
 	units::meters_per_second_t maxSpeed = 4.5_mps;
-	units::meters_per_second_t maxAngularVelocity = 11.5_mps;
+	units::radians_per_second_t maxAngularVelocity = 11.5_rad_per_s;
 
 	// Neutral Modes
 	NeutralMode angleNeutralMode = NeutralMode::Coast;
@@ -145,15 +145,15 @@ struct Swerve {
 struct AutoConstants {
 	units::meters_per_second_t kMaxSpeed = 3_mps;
 	units::meters_per_second_squared_t kMaxAcceleration = 3_mps_sq;
-	units::degrees_per_second_t kMaxAngularSpeedRadiansPerSecond = 180_deg_per_s;
-	units::degrees_per_second_squared_t kMaxAngularAccelerationRadiansPerSecondSquared = 180_deg_per_s / 1_s;
+	units::radians_per_second_t kMaxAngularSpeed = wpi::numbers::pi * 1_rad_per_s;
+	units::radians_per_second_squared_t kMaxAngularAcceleration = wpi::numbers::pi * 1_rad_per_s_sq;
 
 	double kPXController = 1;
 	double kPYController = 1;
 	double kPThetaController = 1;
 
 	// Constraint for the motion profilied robot angle controller
-	frc::TrapezoidProfile<units::degrees>::Constraints kThetaControllerConstraints{ kMaxAngularSpeedRadiansPerSecond , kMaxAngularAccelerationRadiansPerSecondSquared };
+	frc::TrapezoidProfile<units::radians>::Constraints kThetaControllerConstraints{ kMaxAngularSpeed , kMaxAngularAcceleration };
 };
 
 

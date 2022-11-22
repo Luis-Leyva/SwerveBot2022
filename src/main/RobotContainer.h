@@ -5,6 +5,7 @@
 #pragma once
 
 #include "subsystems/swerve/drivetrain/Drivetrain.h"
+#include "commands/Teleop/DriveSwerve/DriveSwerve.h"
 
 #include <frc/GenericHID.h>
 #include <frc/Joystick.h>

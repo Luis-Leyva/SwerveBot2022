@@ -6,6 +6,9 @@
 
 RobotContainer::RobotContainer() {
 	// Initialize all of your commands and subsystems here
+	bool isFieldOriented = true;
+	bool openLoop = true;
+	swerve.SetDefaultCommand(DriveSwerve(&swerve, &driver, translationAxis, strafeAxis, rotationAxis, isFieldOriented, openLoop));
 
 	// Configure the button bindings
 	ConfigureButtonBindings();
@@ -13,9 +16,12 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
 	// Configure your button bindings here
+
+	zeroGyro.WhenPressed(frc2::InstantCommand([this] { swerve.zeroGyro(); }, {}));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
 	// An example command will be run in autonomous
 	// return &m_autonomousCommand;
+	return nullptr;
 }
