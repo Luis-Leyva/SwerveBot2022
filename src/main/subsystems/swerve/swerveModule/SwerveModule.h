@@ -14,6 +14,7 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/controller/PIDController.h>
 #include <units/angle.h>
 #include <units/base.h>
 #include <units/voltage.h>
@@ -26,6 +27,8 @@ public:
 	void configAngleEncoder();
 	void configAngleMotor();
 	void configDriveMotor();
+	void SetRotatorVoltage(double rotatorVoltage);
+	double getPID(double setPoint);
 	frc::Rotation2d getCanCoder();
 	frc::SwerveModuleState getState();
 	int getModuleNumber();
@@ -38,6 +41,7 @@ private:
 	TalonFX* driveMotor;
 	CANCoder* angleEncoder;
 	units::degree_t lastAngle;
+	frc2::PIDController rotatorPID{ constants->swerve.angleKP, constants->swerve.angleKI, constants->swerve.angleKD };
 	frc::SwerveModuleState lastDesiredState;
 	frc::SimpleMotorFeedforward<units::meters> feedforward{ constants->swerve.driveKS, constants->swerve.driveKV, constants->swerve.driveKA };
 };

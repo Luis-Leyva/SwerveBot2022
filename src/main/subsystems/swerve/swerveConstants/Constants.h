@@ -54,7 +54,7 @@ struct Swerve {
 
 	// Angle Motor PID
 	double angleKP = 0.1;
-	double angleKI = 0.0;
+	double angleKI = 0.5;
 	double angleKD = 0.0;
 	double angleKF = 0.0;
 
@@ -86,16 +86,16 @@ struct Swerve {
 
 	/* Module Specific Constants */
 	// Front Left Module - Module 0
-	SwerveModuleConstants Mod0{ 2,1,9,42.62_deg };
+	SwerveModuleConstants Mod0{ 2,1,9,43.15_deg };
 
 	// Front Right Module - Module 1
-	SwerveModuleConstants Mod1{ 4,3,10,114.78_deg };
+	SwerveModuleConstants Mod1{ 4,3,10,115.75_deg };
 
 	// Back Left Module - Module 2
-	SwerveModuleConstants Mod2{ 8,7,12,18.54_deg };
+	SwerveModuleConstants Mod2{ 8,7,12,18.28_deg };
 
 	// Back Right Module - Module 3
-	SwerveModuleConstants Mod3{ 6,5,11,29.26_deg };
+	SwerveModuleConstants Mod3{ 6,5,11,30.05_deg };
 
 	TalonFXConfiguration swerveAngleConfig;
 	TalonFXConfiguration swerveDriveConfig;

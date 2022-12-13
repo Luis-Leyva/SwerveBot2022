@@ -12,6 +12,8 @@ SwerveModule::SwerveModule(Constants* constants, int moduleNumber, SwerveModuleC
 
 	constants->swerve.configure();
 
+	rotatorPID.EnableContinuousInput(0, 360);
+
 	/* Angle Encoder Config */
 	angleEncoder = new CANCoder(moduleConstants->canCoderID);
 	configAngleEncoder();
@@ -42,12 +44,12 @@ void SwerveModule::setDesiredState(frc::SwerveModuleState desiredState, bool isO
 
 	units::degree_t angle = (units::math::abs(desiredState.speed) <= (constants->swerve.maxSpeed * 0.01)) ? lastAngle
 		: desiredState.angle.Degrees(); // Prevent rotating module if speed is less then 1%. Prevents Jittering.
-	angleMotor->Set(ControlMode::Position, Conversions::degreesToFalcon(angle, constants->swerve.angleGearRatio));
+	angleMotor->Set(ControlMode::Position, units::unit_cast<double>(angle));
 	lastAngle = angle;
 }
 
 void SwerveModule::resetToAbsolute() {
-	double absolutePosition = Conversions::degreesToFalcon(getCanCoder().Degrees() - angleOffset, constants->swerve.angleGearRatio);
+	double absolutePosition = units::unit_cast<double>(getCanCoder().Degrees() - angleOffset);
 	angleMotor->SetSelectedSensorPosition(absolutePosition);
 }
 
@@ -73,15 +75,13 @@ void SwerveModule::configDriveMotor() {
 }
 
 frc::Rotation2d SwerveModule::getCanCoder() {
-	units::degree_t position{ angleEncoder->GetAbsolutePosition() };
-	return frc::Rotation2d(position);
+	return frc::Rotation2d(units::degree_t(angleEncoder->GetAbsolutePosition())).RotateBy(units::degree_t(angleOffset));
 }
 
 frc::SwerveModuleState SwerveModule::getState() {
 	units::meters_per_second_t velocity = Conversions::falconToMPS(driveMotor->GetSelectedSensorVelocity(),
 		constants->swerve.wheelCircumference, constants->swerve.driveGearRatio);
-	frc::Rotation2d angle = frc::Rotation2d(
-		Conversions::falconToDegrees(angleMotor->GetSelectedSensorPosition(), constants->swerve.angleGearRatio));
+	frc::Rotation2d angle = getCanCoder();
 	return frc::SwerveModuleState{ velocity, angle };
 }
 

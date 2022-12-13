@@ -76,10 +76,24 @@ void Drivetrain::Periodic() {
 	wpi::array<frc::SwerveModuleState, 4> states{ getStates() };
 	swerveOdometry->Update(getYaw(), states[0], states[1], states[2], states[3]);
 
-	for (int i = 0; i < 4; i++) {
-		frc::SmartDashboard::PutNumber(swerveModules[i]->getModuleNumber() + " Cancoder", units::unit_cast<double>(swerveModules[i]->getCanCoder().Degrees()));
-		frc::SmartDashboard::PutNumber(swerveModules[i]->getModuleNumber() + " Integrated", units::unit_cast<double>(swerveModules[i]->getState().angle.Degrees()));
-		frc::SmartDashboard::PutNumber(swerveModules[i]->getModuleNumber() + " Velocity", units::unit_cast<double>(swerveModules[i]->getState().speed));
-		frc::SmartDashboard::PutNumber(swerveModules[i]->getModuleNumber() + " Target Angle", units::unit_cast<double>(swerveModules[i]->getLastDesiredState().angle.Degrees()));
-	}
+
+	frc::SmartDashboard::PutNumber("0 Cancoder", units::unit_cast<double>(swerveModules[0]->getCanCoder().Degrees()));
+	frc::SmartDashboard::PutNumber("0 Integrated", units::unit_cast<double>(swerveModules[0]->getState().angle.Degrees()));
+	frc::SmartDashboard::PutNumber("0 Velocity", units::unit_cast<double>(swerveModules[0]->getState().speed));
+	frc::SmartDashboard::PutNumber("0 Target Angle", units::unit_cast<double>(swerveModules[0]->getLastDesiredState().angle.Degrees()));
+
+	frc::SmartDashboard::PutNumber("1 Cancoder", units::unit_cast<double>(swerveModules[1]->getCanCoder().Degrees()));
+	frc::SmartDashboard::PutNumber("1 Integrated", units::unit_cast<double>(swerveModules[1]->getState().angle.Degrees()));
+	frc::SmartDashboard::PutNumber("1 Velocity", units::unit_cast<double>(swerveModules[1]->getState().speed));
+	frc::SmartDashboard::PutNumber("1 Target Angle", units::unit_cast<double>(swerveModules[1]->getLastDesiredState().angle.Degrees()));
+
+	frc::SmartDashboard::PutNumber("2 Cancoder", units::unit_cast<double>(swerveModules[2]->getCanCoder().Degrees()));
+	frc::SmartDashboard::PutNumber("2 Integrated", units::unit_cast<double>(swerveModules[2]->getState().angle.Degrees()));
+	frc::SmartDashboard::PutNumber("2 Velocity", units::unit_cast<double>(swerveModules[2]->getState().speed));
+	frc::SmartDashboard::PutNumber("2 Target Angle", units::unit_cast<double>(swerveModules[2]->getLastDesiredState().angle.Degrees()));
+
+	frc::SmartDashboard::PutNumber("3 Cancoder", units::unit_cast<double>(swerveModules[3]->getCanCoder().Degrees()));
+	frc::SmartDashboard::PutNumber("3 Integrated", units::unit_cast<double>(swerveModules[3]->getState().angle.Degrees()));
+	frc::SmartDashboard::PutNumber("3 Velocity", units::unit_cast<double>(swerveModules[3]->getState().speed));
+	frc::SmartDashboard::PutNumber("3 Target Angle", units::unit_cast<double>(swerveModules[3]->getLastDesiredState().angle.Degrees()));
 }
