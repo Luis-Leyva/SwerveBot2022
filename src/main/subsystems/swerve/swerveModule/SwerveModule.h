@@ -37,7 +37,7 @@ private:
 	Constants* constants;
 	int moduleNumber;
 	units::degree_t angleOffset;
-	TalonFX* angleMotor;
+	WPI_TalonFX* angleMotor;
 	TalonFX* driveMotor;
 	CANCoder* angleEncoder;
 	units::degree_t lastAngle;

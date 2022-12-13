@@ -19,7 +19,7 @@ SwerveModule::SwerveModule(Constants* constants, int moduleNumber, SwerveModuleC
 	configAngleEncoder();
 
 	/* Angle Motor Config */
-	angleMotor = new TalonFX(moduleConstants->angleMotorID);
+	angleMotor = new WPI_TalonFX(moduleConstants->angleMotorID);
 	configAngleMotor();
 
 	/* Drive Motor Config */
@@ -44,7 +44,8 @@ void SwerveModule::setDesiredState(frc::SwerveModuleState desiredState, bool isO
 
 	units::degree_t angle = (units::math::abs(desiredState.speed) <= (constants->swerve.maxSpeed * 0.01)) ? lastAngle
 		: desiredState.angle.Degrees(); // Prevent rotating module if speed is less then 1%. Prevents Jittering.
-	angleMotor->Set(ControlMode::Position, units::unit_cast<double>(angle));
+	// angleMotor->Set(ControlMode::Position, units::unit_cast<double>(angle));
+	SetRotatorVoltage(getPID(units::unit_cast<double>(angle)));
 	lastAngle = angle;
 }
 
@@ -72,6 +73,14 @@ void SwerveModule::configDriveMotor() {
 	driveMotor->SetInverted(constants->swerve.driveMotorInvert);
 	driveMotor->SetNeutralMode(constants->swerve.driveNeutralMode);
 	driveMotor->SetSelectedSensorPosition(0);
+}
+
+void SwerveModule::SetRotatorVoltage(double rotatorVoltage) {
+	angleMotor->SetVoltage(units::volt_t(rotatorVoltage));
+}
+
+double SwerveModule::getPID(double setPoint) {
+	return rotatorPID.Calculate(getCanCoder().Degrees().value(), setPoint);
 }
 
 frc::Rotation2d SwerveModule::getCanCoder() {

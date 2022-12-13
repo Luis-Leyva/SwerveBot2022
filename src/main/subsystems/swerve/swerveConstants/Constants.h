@@ -53,8 +53,8 @@ struct Swerve {
 	bool driveEnableCurrentLimit = true;
 
 	// Angle Motor PID
-	double angleKP = 0.1;
-	double angleKI = 0.5;
+	double angleKP = 0.01;
+	double angleKI = 0.0;
 	double angleKD = 0.0;
 	double angleKF = 0.0;
 
